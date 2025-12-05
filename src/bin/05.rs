@@ -56,7 +56,7 @@ impl Range {
     }
 }
 
-fn part1<R: BufRead>(reader: R) -> Result<usize> {
+fn part1(reader: &mut dyn BufRead) -> Result<usize> {
     let mut ranges = vec![];
     let mut ingredients = vec![];
 
@@ -82,7 +82,7 @@ fn part1<R: BufRead>(reader: R) -> Result<usize> {
         .count())
 }
 
-fn part2<R: BufRead>(reader: R) -> Result<usize> {
+fn part2(reader: &mut dyn BufRead) -> Result<usize> {
     let mut ranges = vec![];
 
     for line in reader.lines().flatten() {
@@ -111,20 +111,21 @@ fn part2<R: BufRead>(reader: R) -> Result<usize> {
 fn main() -> Result<()> {
     println!(" === Day: {DAY} === ");
 
-    println!("  == Part 01 == ");
+    run_part(1, TEST_SOLUTION_PART1, part1)?;
+    run_part(2, TEST_SOLUTION_PART2, part2)
+}
 
-    assert_eq!(TEST_SOLUTION_PART1, part1(BufReader::new(TEST.as_bytes()))?);
+fn run_part<F>(number: u8, expected: usize, part: F) -> Result<()>
+where
+    F: Fn(&mut dyn BufRead) -> Result<usize>,
+{
+    println!("\n  == Part {:02} ==", number);
 
-    let input_file = BufReader::new(File::open(INPUT_FILE)?);
-    let result = time!(part1(input_file)?);
-    println!("Result: {result}");
+    let mut test = BufReader::new(TEST.as_bytes());
+    assert_eq!(expected, part(&mut test)?);
 
-    println!("\n  == Part 02 == ");
-
-    assert_eq!(TEST_SOLUTION_PART2, part2(BufReader::new(TEST.as_bytes()))?);
-
-    let input_file = BufReader::new(File::open(INPUT_FILE)?);
-    let result = time!(part2(input_file)?);
+    let mut input_file = BufReader::new(File::open(INPUT_FILE)?);
+    let result = time!(part(&mut input_file)?);
     println!("Result: {result}");
 
     Ok(())
