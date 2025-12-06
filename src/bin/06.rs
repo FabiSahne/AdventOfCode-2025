@@ -13,10 +13,10 @@ const DAY: &str = "06";
 const INPUT_FILE: &str = concatcp!("input/", DAY, ".txt");
 
 const TEST: &str = "\
-123 328  51 64
- 45 64  387 23
+123 328  51 64 
+ 45 64  387 23 
   6 98  215 314
-*   +   *   +
+*   +   *   +  
 ";
 
 const TEST_SOLUTION_PART1: usize = 4277556;
@@ -56,13 +56,7 @@ fn part2(reader: &mut dyn BufRead) -> Result<usize> {
         lines.push(line.into_bytes());
     }
 
-    let width = lines.iter().map(|l| l.len()).max().unwrap();
-    for l in lines.iter_mut() {
-        while l.len() < width {
-            l.push(b' ');
-        }
-    }
-
+    let width = lines[0].len();
     let height = lines.len();
 
     let mut nums = vec![];
