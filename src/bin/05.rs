@@ -42,15 +42,6 @@ impl Range {
     }
 
     #[inline]
-    fn begin_mut(&mut self) -> &mut usize {
-        &mut self.0
-    }
-
-    #[inline]
-    fn end_mut(&mut self) -> &mut usize {
-        &mut self.1
-    }
-    #[inline]
     fn contains(&self, val: usize) -> bool {
         val >= self.begin() && val <= self.end()
     }
@@ -97,8 +88,10 @@ fn part2(reader: &mut dyn BufRead) -> Result<usize> {
 
     for i in (1..ranges.len()).rev() {
         if ranges[i - 1].end() >= ranges[i].begin() {
-            *ranges[i - 1].end_mut() = ranges[i].end();
-            *ranges[i - 1].begin_mut() = ranges[i - 1].begin().min(ranges[i].begin());
+            ranges[i - 1] = Range(
+                ranges[i - 1].begin().min(ranges[i].begin()),
+                ranges[i].end(),
+            );
             ranges.remove(i);
         }
     }
