@@ -31,11 +31,12 @@ fn part1<R: BufRead>(mut reader: R) -> Result<usize> {
         let range = from.parse::<usize>()?..=to.parse::<usize>()?;
 
         for i in range {
-            let i_str = i.to_string();
+            let mag = i.ilog10() + 1;
 
-            if i_str.len() % 2 == 0 {
-                let mid = i_str.len() / 2;
-                if &i_str[..mid] == &i_str[mid..] {
+            if mag % 2 == 0 {
+                let mut cmp = i % 10usize.pow(mag / 2);
+                cmp = cmp * 10usize.pow(mag / 2) + cmp;
+                if cmp == i {
                     result += i;
                 }
             }
