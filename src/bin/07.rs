@@ -55,25 +55,43 @@ fn part1(reader: &mut dyn BufRead) -> Result<usize> {
 }
 
 fn part2(reader: &mut dyn BufRead) -> Result<usize> {
-    let mut grid = vec![];
-    for line in reader.lines().flatten() {
-        grid.push(line.into_bytes());
-    }
+    // let mut grid = vec![];
+    // for line in reader.lines().flatten() {
+    //     grid.push(line.into_bytes());
+    // }
+    //
+    // let (rows, cols) = (grid.len(), grid[0].len());
+    // let start = grid[0].iter().position(|&b| b == b'S').unwrap();
+    //
+    // let mut timelines = vec![0; cols];
+    //
+    // for row in (0..rows - 1).step_by(2).rev() {
+    //     for i in (0..cols).filter(|&i| grid[row][i] == b'^') {
+    //         let left = timelines[i - 1];
+    //         let right = timelines[i + 1];
+    //         timelines[i] = 1 + left + right;
+    //     }
+    // }
+    //
+    // Ok(timelines[start] + 1)
 
-    let (rows, cols) = (grid.len(), grid[0].len());
-    let start = grid[0].iter().position(|&b| b == b'S').unwrap();
+    let mut lines = reader.lines().flatten();
+    let start = lines.next().unwrap();
+    let start_i = start.bytes().position(|b| b == b'S').unwrap();
+    let mut beams = vec![0; start.len()];
+    beams[start_i] = 1;
 
-    let mut timelines = vec![0; cols];
-
-    for row in (0..rows - 1).step_by(2).rev() {
-        for i in (0..cols).filter(|&i| grid[row][i] == b'^') {
-            let left = timelines[i - 1];
-            let right = timelines[i + 1];
-            timelines[i] = 1 + left + right;
+    for line in lines.skip(1).step_by(2) {
+        for (i, b) in line.bytes().enumerate() {
+            if b == b'^' {
+                beams[i + 1] += beams[i];
+                beams[i - 1] += beams[i];
+                beams[i] = 0;
+            }
         }
     }
 
-    Ok(timelines[start] + 1)
+    Ok(beams.into_iter().sum())
 }
 
 //region main
