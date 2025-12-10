@@ -16,8 +16,8 @@ const TEST: &str = "\
 824824821-824824827,2121212118-2121212124
 ";
 
-const TEST_SOLUTION_PART1: usize = 1227775554;
-const TEST_SOLUTION_PART2: usize = 4174379265;
+const TEST_SOLUTION_PART1: usize = 1_227_775_554;
+const TEST_SOLUTION_PART2: usize = 4_174_379_265;
 
 fn part1<R: BufRead>(mut reader: R) -> Result<usize> {
     let mut line = String::new();

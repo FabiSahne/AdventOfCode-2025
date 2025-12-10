@@ -19,8 +19,8 @@ const TEST: &str = "\
 *   +   *   +  
 ";
 
-const TEST_SOLUTION_PART1: usize = 4277556;
-const TEST_SOLUTION_PART2: usize = 3263827;
+const TEST_SOLUTION_PART1: usize = 4_277_556;
+const TEST_SOLUTION_PART2: usize = 3_263_827;
 
 fn part1(reader: &mut dyn BufRead) -> Result<usize> {
     let mut problems = vec![];
@@ -35,16 +35,12 @@ fn part1(reader: &mut dyn BufRead) -> Result<usize> {
                     problems[i].push(num);
                 }
             } else {
-                ops.push(part.parse::<Op>()?)
+                ops.push(part.parse::<Op>()?);
             }
         }
     }
 
-    let result = problems
-        .into_iter()
-        .zip(ops.into_iter())
-        .map(|(p, o)| o.calc(&p))
-        .sum();
+    let result = problems.into_iter().zip(ops).map(|(p, o)| o.calc(&p)).sum();
 
     Ok(result)
 }
@@ -69,10 +65,10 @@ fn part2(reader: &mut dyn BufRead) -> Result<usize> {
         i -= 1;
 
         let mut num = 0;
-        for h in 0..(height - 1) {
-            if lines[h][i].is_ascii_digit() {
+        for line in lines.iter().take(height - 1) {
+            if line[i].is_ascii_digit() {
                 num *= 10;
-                num += (lines[h][i] - b'0') as usize;
+                num += (line[i] - b'0') as usize;
             }
         }
         cur_nums.push(num);
@@ -85,11 +81,7 @@ fn part2(reader: &mut dyn BufRead) -> Result<usize> {
         }
     }
 
-    let result = nums
-        .into_iter()
-        .zip(ops.into_iter())
-        .map(|(p, o)| o.calc(&p))
-        .sum();
+    let result = nums.into_iter().zip(ops).map(|(p, o)| o.calc(&p)).sum();
 
     Ok(result)
 }
@@ -102,8 +94,8 @@ enum Op {
 impl Op {
     fn calc(&self, nums: &[usize]) -> usize {
         match self {
-            Op::Add => nums.into_iter().sum(),
-            Op::Mul => nums.into_iter().product(),
+            Op::Add => nums.iter().sum(),
+            Op::Mul => nums.iter().product(),
         }
     }
 }

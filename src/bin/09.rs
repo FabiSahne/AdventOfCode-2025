@@ -37,7 +37,7 @@ fn part1(reader: &mut dyn BufRead) -> Result<usize> {
     let mut max = 0;
 
     for (i, &(x1, y1)) in tiles.iter().enumerate() {
-        for &(x2, y2) in tiles[i + 1..].iter() {
+        for &(x2, y2) in &tiles[i + 1..] {
             let area = (x1.max(x2) - x1.min(x2) + 1) * (y1.max(y2) - y1.min(y2) + 1);
 
             max = max.max(area);

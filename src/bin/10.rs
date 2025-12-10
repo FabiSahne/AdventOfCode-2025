@@ -31,12 +31,11 @@ fn part1(reader: &mut dyn BufRead) -> Result<usize> {
             .enumerate()
             .fold(0, |lights, (i, c)| lights ^ (u32::from(c == b'#') << i));
         let buttons = parts[1..parts.len() - 1]
-            .into_iter()
+            .iter()
             .map(|b| {
                 b[1..b.len() - 1]
                     .split(',')
-                    .map(u32::from_str)
-                    .flatten()
+                    .flat_map(u32::from_str)
                     .collect::<Vec<_>>()
             })
             .collect::<Vec<_>>();
@@ -59,16 +58,14 @@ fn part2(reader: &mut dyn BufRead) -> Result<usize> {
             .unwrap()
             .trim_matches(['{', '}'])
             .split(',')
-            .map(u32::from_str)
-            .flatten()
+            .flat_map(u32::from_str)
             .collect::<Vec<_>>();
         let buttons = parts[1..parts.len() - 1]
-            .into_iter()
+            .iter()
             .map(|b| {
                 b[1..b.len() - 1]
                     .split(',')
-                    .map(u32::from_str)
-                    .flatten()
+                    .flat_map(u32::from_str)
                     .collect::<Vec<_>>()
             })
             .collect::<Vec<_>>();
@@ -93,10 +90,10 @@ fn solve_via_bfs(goal: u32, buttons: &[Vec<u32>]) -> Result<usize> {
         seen.insert(state);
 
         let neighbors = buttons
-            .into_iter()
+            .iter()
             .map(|button| {
                 button
-                    .into_iter()
+                    .iter()
                     .fold(state, |current, wire| current ^ (1u32 << wire))
             })
             .filter(|neighbor| !seen.contains(neighbor));
@@ -121,8 +118,8 @@ fn solve_via_z3(goal: &[u32], buttons: &[Vec<u32>]) -> Result<usize> {
         opt.assert(&var.ge(&zero));
     }
 
-    for counter_idx in 0..goal.len() {
-        let target = goal[counter_idx] as u64;
+    for (counter_idx, &target) in goal.iter().enumerate() {
+        let target = u64::from(target);
 
         let mut sum_terms = vec![];
         for (button_idx, button) in buttons.iter().enumerate() {

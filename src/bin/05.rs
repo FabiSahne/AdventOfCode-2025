@@ -112,7 +112,7 @@ fn run_part<F>(number: u8, expected: usize, part: F) -> Result<()>
 where
     F: Fn(&mut dyn BufRead) -> Result<usize>,
 {
-    println!("\n  == Part {:02} ==", number);
+    println!("\n  == Part {number:02} ==");
 
     let mut test = BufReader::new(TEST.as_bytes());
     assert_eq!(expected, part(&mut test)?);

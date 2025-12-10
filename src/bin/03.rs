@@ -18,7 +18,7 @@ const TEST: &str = "\
 ";
 
 const TEST_SOLUTION_PART1: usize = 357;
-const TEST_SOLUTION_PART2: usize = 3121910778619;
+const TEST_SOLUTION_PART2: usize = 3_121_910_778_619;
 
 fn part1<R: BufRead>(reader: R) -> Result<usize> {
     let mut sum = 0;

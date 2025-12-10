@@ -73,7 +73,7 @@ impl Ord for Pair {
 
 impl PartialOrd for Pair {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(&other))
+        Some(self.cmp(other))
     }
 }
 
@@ -88,7 +88,7 @@ fn part1(reader: &mut dyn BufRead) -> Result<usize> {
         .lines()
         .flatten()
         .map(|line| {
-            let mut parts = line.split(',').map(usize::from_str).flatten();
+            let mut parts = line.split(',').flat_map(usize::from_str);
             Vec3(
                 parts.next().unwrap(),
                 parts.next().unwrap(),
@@ -106,7 +106,7 @@ fn part1(reader: &mut dyn BufRead) -> Result<usize> {
 
     let mut circuits = boxes
         .into_iter()
-        .map(|b| HashSet::from_iter(std::iter::once(b)))
+        .map(|b| std::iter::once(b).collect())
         .collect::<Vec<HashSet<Vec3>>>();
 
     for _ in 0..number_to_connect {
@@ -139,7 +139,7 @@ fn part2(reader: &mut dyn BufRead) -> Result<usize> {
         .lines()
         .flatten()
         .map(|line| {
-            let mut parts = line.split(',').map(usize::from_str).flatten();
+            let mut parts = line.split(',').flat_map(usize::from_str);
             Vec3(
                 parts.next().unwrap(),
                 parts.next().unwrap(),
@@ -157,7 +157,7 @@ fn part2(reader: &mut dyn BufRead) -> Result<usize> {
 
     let mut circuits = boxes
         .into_iter()
-        .map(|b| HashSet::from_iter(std::iter::once(b)))
+        .map(|b| std::iter::once(b).collect())
         .collect::<Vec<HashSet<Vec3>>>();
 
     while circuits.len() > 1 {
