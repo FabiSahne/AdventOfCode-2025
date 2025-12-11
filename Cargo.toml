@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.100"
 const_format = "0.2.35"
+rayon = "1.11.0"
 z3 = "0.19.5"
 
 [profile.release]

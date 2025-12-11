@@ -1,6 +1,7 @@
 use advent_of_code_2025::time;
 use anyhow::Result;
 use const_format::concatcp;
+use rayon::prelude::*;
 use std::collections::{HashSet, VecDeque};
 use std::str::FromStr;
 use std::{
@@ -23,56 +24,60 @@ const TEST_SOLUTION_PART1: usize = 7;
 const TEST_SOLUTION_PART2: usize = 33;
 
 fn part1(reader: &mut dyn BufRead) -> Result<usize> {
-    let mut presses = vec![];
-    for line in reader.lines().flatten() {
-        let parts = line.split_whitespace().collect::<Vec<_>>();
-        let lights = parts[0][1..parts[0].len() - 1]
-            .bytes()
-            .enumerate()
-            .fold(0, |lights, (i, c)| lights ^ (u32::from(c == b'#') << i));
-        let buttons = parts[1..parts.len() - 1]
-            .iter()
-            .map(|b| {
-                b[1..b.len() - 1]
-                    .split(',')
-                    .flat_map(u32::from_str)
-                    .collect::<Vec<_>>()
-            })
-            .collect::<Vec<_>>();
-        presses.push(std::thread::spawn(move || {
-            solve_via_bfs(lights, &buttons).unwrap()
-        }));
-    }
+    Ok(reader
+        .lines()
+        .flatten()
+        .collect::<Vec<_>>()
+        .into_par_iter()
+        .map(|line| {
+            let parts = line.split_whitespace().collect::<Vec<_>>();
+            let lights = parts[0][1..parts[0].len() - 1]
+                .bytes()
+                .enumerate()
+                .fold(0, |lights, (i, c)| lights ^ (u32::from(c == b'#') << i));
+            let buttons = parts[1..parts.len() - 1]
+                .iter()
+                .map(|b| {
+                    b[1..b.len() - 1]
+                        .split(',')
+                        .flat_map(u32::from_str)
+                        .collect::<Vec<_>>()
+                })
+                .collect::<Vec<_>>();
 
-    let sum = presses.into_iter().map(|t| t.join().unwrap()).sum();
-    Ok(sum)
+            solve_via_bfs(lights, &buttons).unwrap()
+        })
+        .sum())
 }
 
 fn part2(reader: &mut dyn BufRead) -> Result<usize> {
-    let mut pressed = 0;
+    Ok(reader
+        .lines()
+        .flatten()
+        .collect::<Vec<_>>()
+        .into_par_iter()
+        .map(|line| {
+            let parts = line.split_whitespace().collect::<Vec<_>>();
+            let joltage = parts
+                .last()
+                .unwrap()
+                .trim_matches(['{', '}'])
+                .split(',')
+                .flat_map(u32::from_str)
+                .collect::<Vec<_>>();
+            let buttons = parts[1..parts.len() - 1]
+                .iter()
+                .map(|b| {
+                    b[1..b.len() - 1]
+                        .split(',')
+                        .flat_map(u32::from_str)
+                        .collect::<Vec<_>>()
+                })
+                .collect::<Vec<_>>();
 
-    for line in reader.lines().flatten() {
-        let parts = line.split_whitespace().collect::<Vec<_>>();
-        let joltage = parts
-            .last()
-            .unwrap()
-            .trim_matches(['{', '}'])
-            .split(',')
-            .flat_map(u32::from_str)
-            .collect::<Vec<_>>();
-        let buttons = parts[1..parts.len() - 1]
-            .iter()
-            .map(|b| {
-                b[1..b.len() - 1]
-                    .split(',')
-                    .flat_map(u32::from_str)
-                    .collect::<Vec<_>>()
-            })
-            .collect::<Vec<_>>();
-        pressed += solve_via_z3(&joltage, &buttons)?;
-    }
-
-    Ok(pressed)
+            solve_via_z3(&joltage, &buttons).unwrap()
+        })
+        .sum())
 }
 
 fn solve_via_bfs(goal: u32, buttons: &[Vec<u32>]) -> Result<usize> {
