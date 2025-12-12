@@ -23,4 +23,4 @@ Times[^1]:
 Running all twelve days in order takes 224ms.
 
 [^1]: All measurements where taken on a Ryzen 5800X @ 4.85GHz on Fedora 43 using Rust v1.92.0 stable.
-[^2]: Day 12 has no Part 1.
+[^2]: Day 12 has no Part 2.
