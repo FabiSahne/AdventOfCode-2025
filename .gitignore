@@ -2,6 +2,7 @@
 /CSharp/obj
 /Rust/target
 /*/.idea
+.idea
 /Rust/src/bin/template.rs
 /input
 perf.*
